@@ -1,1 +1,1 @@
-algorithms course on coursera
+algorithms course on www.coursera.org
