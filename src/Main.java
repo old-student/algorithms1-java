@@ -1,7 +1,11 @@
+import inversionsCounter.InversionsCounter;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+
+        InversionsCounter invCounter = new InversionsCounter();
+
     }
 
 }
