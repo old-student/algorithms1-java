@@ -1,16 +1,18 @@
-import inversionsCounter.InversionsCounter;
+import quickSort.PivotType;
+import quickSort.QuickSort;
 
 import java.io.IOException;
-import java.util.Arrays;
+
+import static java.util.Collections.sort;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String fileName = "inputData/inversionsCounter/IntegerArray.txt";
-        InversionsCounter invCounter = new InversionsCounter("dsd");
-        //invCounter.printArray();
-        System.out.println(invCounter.getNumberOfInversions());
-        //invCounter.printArray();
+        //String fileName = "inputData/quickSort/SmallIntegerArray.txt";
+        String fileName = "inputData/quickSort/QuickSort.txt";
+        QuickSort quickSort = new QuickSort(fileName);
+        quickSort.setPivotType(PivotType.MEDIAN);
+        System.out.println("Number of comparisons = " + quickSort.sortData());
     }
 
 }

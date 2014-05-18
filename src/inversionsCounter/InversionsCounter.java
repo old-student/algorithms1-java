@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class InversionsCounter {
@@ -11,7 +12,7 @@ public class InversionsCounter {
     /**
      * This field stores the input data for further processing
      */
-    private ArrayList<Integer> data = new ArrayList<Integer>();
+    private List<Integer> data = new ArrayList<Integer>();
 
     public InversionsCounter() {
     }
@@ -70,9 +71,9 @@ public class InversionsCounter {
     }
 
     /**
-     * Method prints inner ArrayList to standard output stream
+     * Method prints inner List to standard output stream
      */
-    public void printArray() {
+    public void printData() {
         System.out.println("Array of size: " + data.size());
         for(int element: data) {
             System.out.println(element);
