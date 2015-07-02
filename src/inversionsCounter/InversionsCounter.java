@@ -3,23 +3,19 @@ package inversionsCounter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class InversionsCounter {
-
     /**
      * This field stores the input data for further processing
      */
-    private List<Integer> data = new ArrayList<Integer>();
+    private int[] data;
 
-    public InversionsCounter() {
-    }
+    public InversionsCounter() { }
 
     /**
-     * Constructor gets as input a name of file with data
-     * and calls setData method to read it
+     * Constructor gets as input a name of file with
+     * data and calls setData method to read it
      *
      * @param fileName A string which contains name of input file
      * @throws java.io.IOException if there are problems with input file
@@ -29,52 +25,45 @@ public class InversionsCounter {
     }
 
     /**
-     * Constructor gets as input an object which implements interface
-     * Iterable and calls setData to set inner data
+     * Constructor gets as input an array if integers
+     * and calls setData to set inner field
      *
-     * @param inputData An object which contains input elements
+     * @param inputData An array which contains input elements
      */
-    public InversionsCounter(Iterable<Integer> inputData) {
+    public InversionsCounter(int[] inputData) {
         setData(inputData);
     }
 
     /**
-     * Method gets an object which implements interface Iterable
-     * and copies its elements to inner ArrayList
+     * Method gets an array and copies its elements to inner field
      *
-     * @param inputData An object which contains input elements
+     * @param inputData An array which contains input elements
      */
-    public void setData(Iterable<Integer> inputData) {
-        data.clear();
-        for(Integer elem: inputData) {
-            data.add(elem);
-        }
+    public void setData(int[] inputData) {
+        data = inputData.clone();
     }
 
     /**
-     * Method gets as input a name of file with data
-     * and calls setData method to read it
+     * Method reads data from file and stores it
      *
      * @param fileName A string which contains name of input file
      * @throws java.io.IOException if there are problems with input file
      */
     public void setData(String fileName) throws IOException {
-        //clear data before reading data from file
-        data.clear();
-
         Path path = Paths.get(fileName);
-        try (Scanner scanner =  new Scanner(path)){
-            while (scanner.hasNextLine()){
-                data.add(Integer.parseInt(scanner.nextLine()));
+        try (Scanner scanner =  new Scanner(path)) {
+            data = new int[ Integer.parseInt(scanner.nextLine()) ];
+            for(int i = 0; i < data.length; ++i) {
+                data[i] = Integer.parseInt(scanner.nextLine());
             }
         }
     }
 
     /**
-     * Method prints inner List to standard output stream
+     * Method prints array to standard output stream
      */
     public void printData() {
-        System.out.println("Array of size: " + data.size());
+        System.out.println("Array size: " + data.length);
         for(int element: data) {
             System.out.println(element);
         }
@@ -82,18 +71,18 @@ public class InversionsCounter {
 
     /**
      * This method is used to call the private method that sorts the
-     * ArrayList data and returns the number of inversions in it
+     * data and returns the number of inversions in it
      *
-     * @return The number of inversions in ArrayList data
+     * @return The number of inversions in inner array
      */
     public long getNumberOfInversions() {
-        return (countInversions(0, data.size() - 1));
+        return countInversions(0, data.length - 1);
     }
 
     /**
      * This method recursively counts the number of inversions in
-     * the left half, in the right half and number of split inversions
-     * of origin array bounded with left and right indices respectively.
+     * the left half, in the right half and the number of split inversions
+     * of the origin array bounded with left and right indices respectively.
      *
      * @param left index of left boundary of origin array
      * @param right index of right boundary of origin array
@@ -121,28 +110,26 @@ public class InversionsCounter {
      * @return The number of split inversions in origin array bounded with beginLeft and endRight indices
      */
     private long countSplitInversions(int beginLeft, int endLeft, int beginRight, int endRight) {
-        int totalNumElements = endRight - beginLeft + 1;
-        int[] bufArray = new int[totalNumElements];
+        int totalElemNumber = endRight - beginLeft + 1;
+        int[] bufArray = new int[totalElemNumber];
         long splitInv = 0;
 
-        for(int iLeft = beginLeft, iRight = beginRight, iBuf = 0; iBuf < totalNumElements; ++iBuf) {
+        for(int iLeft = beginLeft, iRight = beginRight, iBuf = 0; iBuf < totalElemNumber; ++iBuf) {
             if(iLeft > endLeft)
-                bufArray[iBuf] = data.get(iRight++);
+                bufArray[iBuf] = data[iRight++];
             else if(iRight > endRight)
-                bufArray[iBuf] = data.get(iLeft++);
-            else if(data.get(iLeft) < data.get(iRight))
-                bufArray[iBuf] = data.get(iLeft++);
+                bufArray[iBuf] = data[iLeft++];
+            else if(data[iLeft] <= data[iRight])
+                bufArray[iBuf] = data[iLeft++];
             else {
-                bufArray[iBuf] = data.get(iRight++);
+                bufArray[iBuf] = data[iRight++];
                 splitInv += endLeft - iLeft + 1;
             }
         }
 
-        for(int iBuf = 0; iBuf < totalNumElements; ++iBuf) {
-            data.set(iBuf + beginLeft, bufArray[iBuf]);
-        }
+        System.arraycopy(bufArray, 0, data, beginLeft, bufArray.length);
 
-        return (splitInv);
+        return splitInv;
     }
 
 }

@@ -1,8 +1,8 @@
 package helpClasses;
 
-public class Pair<
+public class Pair <
         FirstType extends Comparable<FirstType>,
-        SecondType extends Comparable<SecondType>>
+        SecondType extends Comparable<SecondType> >
         implements Comparable<Pair<FirstType,SecondType>> {
 
     private FirstType first;
