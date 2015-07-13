@@ -90,7 +90,7 @@ public class InversionsCounter {
      */
     private long countInversions(int left, int right) {
         if(left >= right)
-            return (0);
+            return 0;
 
         int middle = (left + right) / 2;
         long leftInv  = countInversions(left, middle);
@@ -113,7 +113,6 @@ public class InversionsCounter {
         int totalElemNumber = endRight - beginLeft + 1;
         int[] bufArray = new int[totalElemNumber];
         long splitInv = 0;
-
         for(int iLeft = beginLeft, iRight = beginRight, iBuf = 0; iBuf < totalElemNumber; ++iBuf) {
             if(iLeft > endLeft)
                 bufArray[iBuf] = data[iRight++];
@@ -126,10 +125,7 @@ public class InversionsCounter {
                 splitInv += endLeft - iLeft + 1;
             }
         }
-
         System.arraycopy(bufArray, 0, data, beginLeft, bufArray.length);
-
         return splitInv;
     }
-
 }

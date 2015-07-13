@@ -1,5 +1,7 @@
 package helpClasses;
 
+import java.util.Comparator;
+
 public class Pair <
         FirstType extends Comparable<FirstType>,
         SecondType extends Comparable<SecondType> >
@@ -7,6 +9,8 @@ public class Pair <
 
     private FirstType first;
     private SecondType second;
+
+    public Pair() {}
 
     public Pair(FirstType first, SecondType second) {
         this.first = first;
@@ -31,25 +35,24 @@ public class Pair <
 
     @Override
     public String toString() {
-        return ("First = " + this.first + "; Second = " + this.second);
+        return ("First = " + getFirst() + "; Second = " + getSecond());
     }
 
     @Override
     public boolean equals(Object rhs) {
         if(rhs == null || !(rhs instanceof Pair))
             return false;
-
         Pair pair = (Pair)rhs;
-        return (first.equals(pair.first) && second.equals(pair.second));
+        return getFirst().equals(pair.getFirst()) && getSecond().equals(pair.getSecond());
     }
 
     @Override
     public int compareTo(Pair<FirstType,SecondType> rhs) {
-        int resValue = first.compareTo(rhs.first);
+        int resValue = getFirst().compareTo(rhs.getFirst());
         if(resValue == 0) {
-            resValue = second.compareTo(rhs.second);
+            resValue = getSecond().compareTo(rhs.getSecond());
         }
-        return (resValue);
+        return resValue;
     }
 
 }

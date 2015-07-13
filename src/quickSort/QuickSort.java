@@ -8,30 +8,26 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static java.util.Collections.sort;
-import static java.util.Collections.swap;
 
 public class QuickSort {
 
     /**
-     * This field tells how to choose pivot element for partitioning
-     * default value is first element of array
+     * This field tells how to choose pivot element for partitioning.
+     * Default value is the first element of array.
      */
     private PivotType pivotType = PivotType.FIRST;
 
     /**
-     * This field stores the input data for further processing
+     * This field stores input data for further processing
      */
-    private List<Integer> data = new ArrayList<Integer>();
+    private int[] data;
 
 
     public QuickSort() {
     }
 
     /**
-     * Constructor gets as input a name of file with data
-     * and calls setData method to read it
-     *
-     * @param fileName A string which contains name of input file
+     * @param fileName String which contains name of input file
      * @throws java.io.IOException if there are problems with input file
      */
     public QuickSort(String fileName) throws IOException {
@@ -39,12 +35,9 @@ public class QuickSort {
     }
 
     /**
-     * Constructor gets as input an object which implements interface
-     * Iterable and calls setData to set inner data
-     *
-     * @param inputData An object which contains input elements
+     * @param inputData An object which contains input array
      */
-    public QuickSort(Iterable<Integer> inputData) {
+    public QuickSort(int[] inputData) {
         setData(inputData);
     }
 
@@ -53,45 +46,39 @@ public class QuickSort {
     }
 
     public PivotType getPivotType() {
-        return (this.pivotType);
+        return this.pivotType;
     }
 
     /**
-     * Method gets an object which implements interface Iterable
-     * and copies its elements to inner ArrayList
-     *
-     * @param inputData An object which contains input elements
+     * @param inputData An object which contains input array
      */
-    public void setData(Iterable<Integer> inputData) {
-        data.clear();
-        for(Integer elem: inputData) {
-            data.add(elem);
-        }
+    public void setData(int[] inputData) {
+        data = inputData.clone();
     }
 
     /**
-     * Method gets as input a name of file with data and read it
-     *
      * @param fileName A string which contains name of input file
      * @throws java.io.IOException if there are problems with input file
      */
     public void setData(String fileName) throws IOException {
-        //clear data before reading data from file
-        data.clear();
-
         Path path = Paths.get(fileName);
-        try (Scanner scanner =  new Scanner(path)){
-            while (scanner.hasNextLine()){
-                data.add(Integer.parseInt(scanner.nextLine()));
+        try (Scanner scanner =  new Scanner(path)) {
+            data = new int[ Integer.parseInt(scanner.nextLine()) ];
+            for(int i=0; i < data.length; ++i) {
+                data[i] = Integer.parseInt(scanner.nextLine());
             }
         }
     }
 
+    public int[] getData() {
+        return data;
+    }
+
     /**
-     * Method prints inner List to standard output stream
+     * Method prints out data array
      */
     public void printData() {
-        System.out.println("Array of size: " + data.size());
+        System.out.println("Array of size: " + data.length);
         for(int element: data) {
             System.out.println(element);
         }
@@ -99,14 +86,14 @@ public class QuickSort {
 
     /**
      * Method calls main method to sort data array and counts number of comparisons
-     * @return The total number of comparisons used to sort data array
+     * @return The total number of comparisons used by sorting data array
      */
     public long sortData() {
-        return (recursiveQuickSort(0, data.size() - 1));
+        return recursiveQuickSort(0, data.length - 1);
     }
 
     /**
-     * This method recursively sorts the data array and
+     * This method recursively sorts data array and
      * counts the number of comparisons used for partitioning
      * and in the left and the right halves
      *
@@ -116,11 +103,22 @@ public class QuickSort {
      */
     private long recursiveQuickSort(int left, int right) {
         if(left >= right)
-            return (0);
+            return 0;
         int pivotIndex = partitionDataAroundPivot(left, right, getPivotIndex(left, right));
         return ( (right - left)
                  + recursiveQuickSort(left, pivotIndex - 1)
                  + recursiveQuickSort(pivotIndex + 1, right) );
+    }
+
+    /**
+     * Method swaps ith and jth elements of data array
+     * @param i first index
+     * @param j second index
+     */
+    public void swapData (int i, int j) {
+        int buf  = data[i];
+        data[i] = data[j];
+        data[j] = buf;
     }
 
     /**
@@ -132,20 +130,19 @@ public class QuickSort {
      * @return index of pivot element in already partitioned array
      */
     private int partitionDataAroundPivot(int left, int right, int pivotIndex) {
-        //pivot element is always a first element of array
-        swap(data, left, pivotIndex);
+        //pivot element is always the first element of array
+        swapData(left, pivotIndex);
 
-        int pivotValue = data.get(left);
+        int pivotValue = data[left];
         int i = left + 1;
         for(int j = left + 1; j <= right; j++) {
-            if(data.get(j) < pivotValue) {
-                swap(data, j, i);
+            if(data[j] < pivotValue) {
+                swapData(j, i);
                 ++i;
             }
         }
         //insert pivot element in appropriate position
-        swap(data, left, i-1);
-
+        swapData(left, i - 1);
         return (i-1); //return index of pivot element of partitioned array
     }
 
@@ -167,27 +164,15 @@ public class QuickSort {
                 break;
             case MEDIAN:
                 int median = (left + right) / 2;
-                List<Pair<Integer, Integer>> pairs = new ArrayList<>();
-                pairs.add(new Pair(data.get(left), left));
-                pairs.add(new Pair(data.get(median), median));
-                pairs.add(new Pair(data.get(right), right));
+                List<Pair<Integer,Integer>> pairs = new ArrayList<>();
+                pairs.add(new Pair<>(data[left], left));
+                pairs.add(new Pair<>(data[median], median));
+                pairs.add(new Pair<>(data[right], right));
                 sort(pairs);
-                //get index of middle-stayed value [0,1,2]
                 pivotIndex = pairs.get(1).getSecond();
                 break;
         }
-        return (pivotIndex);
+        return pivotIndex;
     }
 
-    /**
-     * Method creates deep copy of data array
-     * @return deep copy of data array
-     */
-    public List<Integer> getDataCopy() {
-        List<Integer> copyList = new ArrayList<Integer>();
-        for(Integer elem : data) {
-            copyList.add(new Integer(elem));
-        }
-        return(copyList);
-    }
 }
